@@ -30,3 +30,10 @@ def generate_data_for_second_func():
 	df = pd.DataFrame({'x':x, 'y':y, 'z':z, 'F':output})
 	np.random.shuffle(df.values)
 	df.to_csv('../data/data2.csv', index=False)
+
+def read_data():
+	data = []
+	for i in range(2):
+		data.append(pd.read_csv('../data/data' + str(i + 1) + '.csv'))
+
+	return data
