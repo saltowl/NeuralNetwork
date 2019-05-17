@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
 
 def sigmoid(x, derivative=False):
     sigm = 1. / (1. + np.exp(-x))
@@ -30,15 +31,29 @@ class NeuralNetwork:
 		self.weights2 -= self.layer1.T.dot(d_weights2 * learning_rate)
 		self.weights1 -= self.input.T.dot(d_weights1 * learning_rate)
 	
-	def train(self, num_epochs, learning_rate, display_loss):
+	def train(self, num_epochs, learning_rate, display_loss, label):
+		loss = []
+		epochs = []
 		for i in range(num_epochs):
 			self.feedforward(self.input)
 			if display_loss:
-				print("Epoch " + str(i) + ': ' + '; MSE: ' + str(mean_squared_error(self.y, self.output)))
+				loss.append(mean_squared_error(self.y, self.output))
+				epochs.append(i)
+				print("Epoch " + str(i) + ': ' + '; MSE: ' + str(loss[len(loss)-1]))
 			self.backprop(learning_rate)
+
+		if display_loss:
+			self.plot_MSE(epochs, loss, label)
+
+		return mean_squared_error(self.y, self.output)
 
 	def test(self, X):
 		self.feedforward(X)
 
 		return self.output[:len(X)]
 
+	def plot_MSE(self, epochs, loss, label):
+		plt.plot(epochs, loss, label=label)
+		plt.xlabel('Epoch')
+		plt.ylabel('MSE')
+		plt.legend()
